@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce Platform</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 10px;
+        }
+        .form-container, .products-container {
+            margin-bottom: 30px;
+        }
+        input[type="text"], input[type="number"] {
+            padding: 10px;
+            margin-right: 10px;
+            width: 200px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #555;
+        }
+        .product {
+            background-color: white;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+        }
+        .cart {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>E-commerce Platform</h1>
+    </header>
+
+    <div class="container">
+        <!-- Seller's form to add products -->
+        <div class="form-container">
+            <h2>Seller: Add a Product</h2>
+            <input type="text" id="productName" placeholder="Product Name" />
+            <input type="number" id="productPrice" placeholder="Product Price" />
+            <button id="addProductBtn">Add Product</button>
+        </div>
+
+        <!-- Display products -->
+        <div class="products-container">
+            <h2>Products</h2>
+            <div id="products"></div>
+        </div>
+
+        <!-- Cart -->
+        <div class="cart">
+            <h2>Shopping Cart</h2>
+            <div id="cart"></div>
+            <p>Total: $<span id="totalPrice">0</span></p>
+        </div>
+    </div>
+
+    <script>
+        const products = [];
+        const cart = [];
+
+        // Function to render products
+        function renderProducts() {
+            const productsContainer = document.getElementById('products');
+            productsContainer.innerHTML = '';
+
+            products.forEach((product, index) => {
+                const productDiv = document.createElement('div');
+                productDiv.className = 'product';
+                productDiv.innerHTML = `
+                    <span>${product.name} - $${product.price}</span>
+                    <button onclick="addToCart(${index})">Add to Cart</button>
+                `;
+                productsContainer.appendChild(productDiv);
+            });
+        }
+
+        // Function to render the cart
+        function renderCart() {
+            const cartContainer = document.getElementById('cart');
+            cartContainer.innerHTML = '';
+
+            cart.forEach(item => {
+                const cartDiv = document.createElement('div');
+                cartDiv.className = 'product';
+                cartDiv.innerHTML = `${item.name} - $${item.price}`;
+                cartContainer.appendChild(cartDiv);
+            });
+
+            const totalPrice = cart.reduce((sum, item) => sum + item.price, 0);
+            document.getElementById('totalPrice').innerText = totalPrice.toFixed(2);
+        }
+
+        // Function to add product to cart
+        function addToCart(productIndex) {
+            const product = products[productIndex];
+            cart.push(product);
+            renderCart();
+        }
+
+        // Function to add a new product
+        document.getElementById('addProductBtn').addEventListener('click', () => {
+            const productName = document.getElementById('productName').value;
+            const productPrice = parseFloat(document.getElementById('productPrice').value);
+
+            if (productName && productPrice) {
+                const newProduct = { name: productName, price: productPrice };
+                products.push(newProduct);
+                renderProducts();
+
+                // Clear inputs
+                document.getElementById('productName').value = '';
+                document.getElementById('productPrice').value = '';
+            } else {
+                alert('Please enter valid product details.');
+            }
+        });
+
+        // Initial render of products and cart
+        renderProducts();
+        renderCart();
+    </script>
+</body>
+</html>
